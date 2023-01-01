@@ -1,7 +1,7 @@
 ---
 title: "Ambassador Writeup"
 date: 2022-12-28T13:16:47-05:00
-draft: true
+draft: false
 toc: false
 images:
 tags:
