@@ -56,7 +56,7 @@ googleAnalytics = 'G-59CYRKS995'
     readOtherPosts = "Read other posts"
 
   [languages.en.params.logo]
-    logoText = "tar -xf ~/ideas-that-might-work.tar.gz"
+    logoText = "tar -xf ~/ideas.tar.gz"
     logoHomeLink = "/"
     logoCursorColor = "#b40aff" #logoCursorColor = "#00ff00"
     # or
