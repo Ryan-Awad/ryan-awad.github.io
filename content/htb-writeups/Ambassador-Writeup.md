@@ -9,6 +9,7 @@ tags:
   - linux
   - hacking
 ---
+![Untitled](../../img/Ambassador.png)
 
 ## User Owning:
 
