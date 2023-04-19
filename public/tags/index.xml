@@ -7,9 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Sun, 01 Jan 2023 22:54:45 -0500</lastBuildDate>
     
 	<atom:link href="https://ryan-awad.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>hacking</title>
+      <link>https://ryan-awad.github.io/tags/hacking/</link>
+      <pubDate>Sun, 01 Jan 2023 22:54:45 -0500</pubDate>
+      
+      <guid>https://ryan-awad.github.io/tags/hacking/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hackthebox</title>
+      <link>https://ryan-awad.github.io/tags/hackthebox/</link>
+      <pubDate>Sun, 01 Jan 2023 22:54:45 -0500</pubDate>
+      
+      <guid>https://ryan-awad.github.io/tags/hackthebox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://ryan-awad.github.io/tags/linux/</link>
+      <pubDate>Sun, 01 Jan 2023 22:54:45 -0500</pubDate>
+      
+      <guid>https://ryan-awad.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

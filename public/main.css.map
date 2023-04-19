@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "main.css",
-	"sourceRoot": "/mnt/c/Users/amazi/Coding-Projects/ryan-awad.github.io",
+	"sourceRoot": "/home/ryan-awad/ryan-awad.github.io",
 	"sources": [
 		"themes/hello-friend-ng/assets/scss/main.scss",
 		"themes/hello-friend-ng/assets/scss/_normalize.scss",

