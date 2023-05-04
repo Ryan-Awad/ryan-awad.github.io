@@ -67,14 +67,14 @@ googleAnalytics = 'G-59CYRKS995'
   # And you can even create generic menu
 
 [[menu.main]]
-  identifier = "bugbounties"
-  name       = "Bug Bounties"
-  url        = "bug-bounties/"
+  identifier = "htb-machine-writeups"
+  name       = "HTB Machine Writeups"
+  url        = "htb-machine-writeups/"
 
 [[menu.main]]
-  identifier = "htb-writeups"
-  name       = "HTB Writeups"
-  url        = "htb-writeups/"
+identifier = "htb-challenge-writeups"
+name       = "HTB Challenge Writeups"
+url        = "htb-challenge-writeups/"
 
 [markup.highlight]
   codeFences = true
