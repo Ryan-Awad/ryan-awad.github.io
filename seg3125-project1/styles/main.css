@@ -1,0 +1,25 @@
+body {
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.navbar {
+    background-color: #D9D9D9 !important;
+}
+
+.card {
+    background-color: #D9D9D9 !important;
+    border-style: none;
+    box-shadow: 10px 10px 30px -10px black;
+}
+
+.btn-custom {
+    background-color: #81C3FF; 
+    border-style: none;
+    border-radius: 10px;
+}
+
+.btn-custom:hover {
+    background-color: #72abe0; 
+}

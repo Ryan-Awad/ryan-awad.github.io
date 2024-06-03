@@ -1,0 +1,13 @@
+#infoCard {
+    width: 800px;
+    margin: auto;
+    padding: 15px;
+}
+
+#infoCardContainer {
+    padding: 50px;
+}
+
+.card {
+    border-radius: 15px;
+}
