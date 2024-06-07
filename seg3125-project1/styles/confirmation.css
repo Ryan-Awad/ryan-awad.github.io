@@ -1,0 +1,12 @@
+#confirmationCard h4 {
+    text-align: center;
+}
+
+#confirmationCard {
+    padding: 25px;
+    margin: auto;
+    position: relative;
+    top: 75px;
+    border-radius: 15px;
+    width: 400px !important;
+}
