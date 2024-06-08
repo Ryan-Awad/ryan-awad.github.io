@@ -1,11 +1,12 @@
-function storeSchedulingInfo(date, time, name, email, climbingType, renting) {
+function storeSchedulingInfo(date, time, name, email, climbingType, renting, teamCode) {
   let schedulingInfo = JSON.stringify({
     date: date,
     time: time,
     name: name,
     email: email,
     climbingType: climbingType,
-    renting: renting // BUG: this key-value pair is NOT being stored in the local storage
+    renting: renting, // BUG: this key-value pair is NOT being stored in the local storage
+    teamCode: teamCode
   });
   localStorage.setItem("schedulingInfo", btoa(schedulingInfo)); // storing the base64 encoded schedulingInfo object in local storage
 }
@@ -43,11 +44,14 @@ function getSchedulingInfo() {
 }
 
 function getAllSessionData() {
+  let schedulingInfo = JSON.parse(atob(localStorage.getItem("schedulingInfo")));
   let data = {
-    'schedulingInfo': JSON.parse(atob(localStorage.getItem("schedulingInfo"))),
+    'schedulingInfo': schedulingInfo,
     'guide': localStorage.getItem("guideName"),
-    'rentals': JSON.parse(atob(localStorage.getItem("rentals")))
   };
+
+  if (schedulingInfo['renting'])
+    data['rentals'] = JSON.parse(atob(localStorage.getItem("rentals")))
 
   if (localStorage.getItem("paymentInfo"))
     data['paymentInfo'] = JSON.parse(atob(localStorage.getItem("paymentInfo")));

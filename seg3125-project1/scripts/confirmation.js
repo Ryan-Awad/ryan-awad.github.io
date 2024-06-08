@@ -1,6 +1,9 @@
 function displaySessionData(session) {
   document.getElementById("cardholderName").value = session['paymentInfo']['cardholderName'];
   document.getElementById("selectedGuide").value = "$50.00 — " + session['guide'];
+  document.getElementById("teamCode").value = session['schedulingInfo']['teamCode'] ? session['schedulingInfo']['teamCode'] : "N/A";
+  document.getElementById("date").value = session['schedulingInfo']['date'];
+  document.getElementById("time").value = session['schedulingInfo']['time'];
 
   let currRental;
   if (session['schedulingInfo']['renting']) {

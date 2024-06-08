@@ -29,6 +29,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="./equipment.html">Equipment</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./training.html">Personalized Training Plans</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -69,6 +72,13 @@
                     </select>
                 </div>
 
+                <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text" id="basic-addon1">Team code (optional): </span>
+                    <input id="teamCode" type="text" class="form-control" placeholder="XXXXXX" maxlength="6">
+                    <small>If you want to schedule a climbing session with others, make sure to have everyone input the same team code.</small>
+                </div>
+
+
                 <div class="form-check">
                     <input id="requiresRentals" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                     <label class="form-check-label" for="flexCheckDefault">
@@ -90,7 +100,8 @@
                 document.getElementById('name').value,
                 document.getElementById('email').value,
                 climbingType.options[climbingType.selectedIndex].text,
-                document.getElementById('requiresRentals').checked
+                document.getElementById('requiresRentals').checked,
+                document.getElementById('teamCode').value
             );
         }
     </script>
