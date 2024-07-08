@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/seg3125-project2/step3/static/css/main.f66abe50.css",
+    "main.js": "/seg3125-project2/step3/static/js/main.b185c04e.js",
+    "index.html": "/seg3125-project2/step3/index.html",
+    "main.f66abe50.css.map": "/seg3125-project2/step3/static/css/main.f66abe50.css.map",
+    "main.b185c04e.js.map": "/seg3125-project2/step3/static/js/main.b185c04e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f66abe50.css",
+    "static/js/main.b185c04e.js"
+  ]
+}
